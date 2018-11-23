@@ -1,0 +1,1 @@
+{vene=boat, auto=car, koira=dog, hevonen=horse, kissa=cat, peruna=potato}
