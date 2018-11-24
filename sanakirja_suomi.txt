@@ -1,7 +1,0 @@
-vene
-auto
-koira
-hevonen
-tietokone
-puhelin
-kissa

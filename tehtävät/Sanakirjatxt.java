@@ -78,8 +78,11 @@ public class Sanakirjatxt {
 				String buffer = l.nextLine();
 				while (true) {
 					System.out.println("Minkä sanan käännöksen haluat tietää? (tyhjä sana lopettaa)");
-					String avain = l.nextLine();
+					String sana = l.nextLine();
+					String avain = sana.toLowerCase();
 					
+					//Tarkistetaan, löytyykö käyttäjän antamaa sanaa sanakirjasta tai jos sana on tyhjä,
+					//mennää takaisin valikkoon
 					if (sanakirja.containsKey(avain)) {
 						System.out.println("Sanan \"" + avain + "\" käännös on \"" + sanakirja.get(avain) + "\"");
 						continue;
@@ -89,30 +92,41 @@ public class Sanakirjatxt {
 					} else if (avain.isEmpty());{
 						break;
 					}
-					
 				}
+					
+					
+				
 			} else if (vastaus == 2) {
 				String buffer = l.nextLine();
+				
 				while (true) {
 					l.reset();
 					System.out.println("Anna sana suomeksi(tyhjä sana lopettaa): ");
 					String suomeksi = l.nextLine();
-					if (suomeksi.length() > 0) {
-						
-					} else {
+					
+					//Tarkistetaan antoiko käyttäjä sanan, jos ei, mennää takaisin valikkoon
+					if (suomeksi.isEmpty()) {
 						break;
+					} else {
+						System.out.println("Anna sana englanniksi (tyhjä keskeyttää): ");
+						String englanniksi = l.nextLine();
+						if (englanniksi.isEmpty()) {
+							break;
+						} else {
+							//Lisätään sanat sanakirjaa pienillä kirjaimilla ongelmien välttämiseksi
+							sanakirja.put(suomeksi.toLowerCase(), englanniksi.toLowerCase());
+						}
 					}
-					System.out.println("Anna sana englanniksi: ");
-					String englanniksi = l.nextLine();
-					sanakirja.put(suomeksi, englanniksi);
-				}
 				
+				}
 			}  else if (vastaus == 3) {
 				
 				try {
 					FileWriter tallennusSuomi = new FileWriter("sanakirja_suomi.txt");
 					FileWriter tallennusEnglanti = new FileWriter("sanakirja_englanti.txt");
 					
+					//tämä for looppi käy läpi koko sanakirjan ja lisäilee
+					//yksi kerrallaan sanat tekstitiedostoihin
 					for (HashMap.Entry<String, String> entry : sanakirja.entrySet())
 					{
 					    tallennusSuomi.write(entry.getKey() + System.lineSeparator());
@@ -136,10 +150,11 @@ public class Sanakirjatxt {
 					{
 					    tallennusSuomi.write(entry.getKey() + System.lineSeparator());
 					    tallennusEnglanti.write(entry.getValue() + System.lineSeparator());
+					    tallennusEnglanti.flush();
+						tallennusSuomi.flush();
 					}
 					
-					tallennusEnglanti.flush();
-					tallennusSuomi.flush();
+					
 					tallennusEnglanti.close();
 					tallennusSuomi.close();
 					
