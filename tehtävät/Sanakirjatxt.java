@@ -1,38 +1,19 @@
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.EOFException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Scanner;
-public class Sanakirja {
+
+public class Sanakirjatxt {
+	
 	public static String[] suomi = { "kissa", "koira", "hevonen", "auto", "vene" };
 	public static String[] englanti = { "cat", "dog", "horse", "car", "boat" };
-	//public static HashMap <String, String> sanakirja = new HashMap<String, String>();
-	
-	public static void vieXML(HashMap<String, String> kirja) throws IOException {
-		FileOutputStream fos = new FileOutputStream("sanakirja.xml");
-		XMLEncoder encoder = new XMLEncoder(fos);
-		encoder.writeObject(kirja);
-		encoder.close();
-		fos.close();
-	}
-	
-	public static HashMap<String, String> tuoXML() throws IOException {
-		FileInputStream fis = new FileInputStream("sanakirja.xml");
-		XMLDecoder decoder = new XMLDecoder(fis);
-		HashMap<String, String> purettukirja = (HashMap) decoder.readObject();
-		decoder.close();
-		fis.close();
-		return purettukirja;
-	}
 
-	public static void main(String[] args) throws IOException, ClassNotFoundException, EOFException {
+
+	public static void main(String[] args) throws IOException {
+		
+
 		
 		//FileOutputStream apuTied = new FileOutputStream("C:\\Users\\miizu\\Documents\\GitHub\\tehtavia\\tehtävät\\tallennettu.oma");
 		//ObjectOutputStream talteen = new ObjectOutputStream(apuTied);
@@ -40,18 +21,38 @@ public class Sanakirja {
 		//FileInputStream fis = new FileInputStream("C:\\Users\\miizu\\Documents\\GitHub\\tehtavia\\tehtävät\\tallennettu.oma");
 		//ObjectInputStream luettuData = new ObjectInputStream(fis);
 		HashMap<String, String> sanakirja;
-		File kirjasto = new File("sanakirja.xml");
-		if (kirjasto.createNewFile()) {
+		Scanner tiedostoLukijaSuomi;
+		Scanner tiedostoLukijaEnglanti;
+		File sanatEnglanti = new File("sanakirja_englanti.txt");
+		File sanatSuomi = new File("sanakirja_suomi.txt");
+		
+		if (sanatEnglanti.createNewFile()) {
 			System.out.println("Tallennettua sanakirjaa ei löytynyt, luodaan...");
 			sanakirja = new HashMap<String, String>();
-			//laitetaan sanakirjaa sanat ja käännökset
+			//Jos tiedostoja ei löydy, luodaan pieni 
 			
 			for (int i = 0; i < suomi.length; i++) {
 				sanakirja.put(suomi[i], englanti[i]);
 			}
-        }else { 
+			
+        } else { 
         	System.out.println("Tallennettu sanakirja löytyi, ladataan...");
-        	sanakirja = tuoXML();
+        	
+        	tiedostoLukijaSuomi = new Scanner(sanatSuomi);
+        	tiedostoLukijaEnglanti = new Scanner(sanatEnglanti);
+        	sanakirja = new HashMap<String, String>();
+        	String sanaSuomi;
+        	String sanaEnglanti;
+        	while (tiedostoLukijaSuomi.hasNextLine()) {
+        		sanaSuomi = tiedostoLukijaSuomi.nextLine();
+        		sanaEnglanti = tiedostoLukijaEnglanti.nextLine();
+        		sanakirja.put(sanaSuomi, sanaEnglanti);
+        	}
+        	
+        	tiedostoLukijaSuomi.close();
+        	tiedostoLukijaEnglanti.close();
+        	
+        	
         }
 		
 		
@@ -62,21 +63,20 @@ public class Sanakirja {
 		
 		
 		Scanner l = new Scanner(System.in);
+
 		
 		while (true) {
 			System.out.println("Sanakirja: " + sanakirja);
 			System.out.println("Mitä haluat tehdä? (valitse numeroilla 1-3)\n");
 			System.out.println("1. Sanakirja");
 			System.out.println("2. Lisää sanoja sanakirjaan");
-			System.out.println("3. Tallenna XML ja lopeta ohjelma");
-			System.out.println("4. Tallenna txt ja lopeta ohjelma");
+			System.out.println("3. Tallenna txt ja lopeta ohjelma");
 			
 			int vastaus = l.nextInt();
 			
 			if (vastaus == 1) {
 				String buffer = l.nextLine();
 				while (true) {
-					
 					System.out.println("Minkä sanan käännöksen haluat tietää? (tyhjä sana lopettaa)");
 					String avain = l.nextLine();
 					
@@ -107,15 +107,53 @@ public class Sanakirja {
 					sanakirja.put(suomeksi, englanniksi);
 				}
 				
-			} else if (vastaus == 3) {
-				vieXML(sanakirja);
+			}  else if (vastaus == 3) {
+				
+				try {
+					FileWriter tallennusSuomi = new FileWriter("sanakirja_suomi.txt");
+					FileWriter tallennusEnglanti = new FileWriter("sanakirja_englanti.txt");
+					
+					for (HashMap.Entry<String, String> entry : sanakirja.entrySet())
+					{
+					    tallennusSuomi.write(entry.getKey() + System.lineSeparator());
+					    tallennusEnglanti.write(entry.getValue() + System.lineSeparator());
+					    tallennusEnglanti.flush();
+						tallennusSuomi.flush();
+					}
+					
+					tallennusEnglanti.flush();
+					tallennusSuomi.flush();
+					tallennusEnglanti.close();
+					tallennusSuomi.close();
+					
+				} catch (FileNotFoundException e1) {
+					File txt1 = new File("sanakirja_suomi.txt");
+					File txt2 = new File("sanakirja_englanti.txt");
+					FileWriter tallennusSuomi = new FileWriter(txt1);
+					FileWriter tallennusEnglanti = new FileWriter(txt2);
+					
+					for (HashMap.Entry<String, String> entry : sanakirja.entrySet())
+					{
+					    tallennusSuomi.write(entry.getKey() + System.lineSeparator());
+					    tallennusEnglanti.write(entry.getValue() + System.lineSeparator());
+					}
+					
+					tallennusEnglanti.flush();
+					tallennusSuomi.flush();
+					tallennusEnglanti.close();
+					tallennusSuomi.close();
+					
+				}
+				
+				
 				System.out.println("Lopetetaan...");
 				System.exit(0);
-			} 
+			}
 		}
 		
 		
 		
+
 	}
 
 }

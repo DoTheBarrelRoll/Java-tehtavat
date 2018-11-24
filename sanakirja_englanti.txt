@@ -1,0 +1,7 @@
+boat
+car
+dog
+horse
+computer
+cell phone
+cat

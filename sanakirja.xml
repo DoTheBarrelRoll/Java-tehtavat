@@ -14,8 +14,16 @@
    <string>dog</string>
   </void>
   <void method="put">
+   <string>potatoes</string>
+   <string>perunat</string>
+  </void>
+  <void method="put">
    <string>hevonen</string>
    <string>horse</string>
+  </void>
+  <void method="put">
+   <string>hiiri</string>
+   <string>mouse</string>
   </void>
   <void method="put">
    <string>kissa</string>
