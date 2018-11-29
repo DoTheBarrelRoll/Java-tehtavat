@@ -29,7 +29,7 @@ public class Sanakirjatxt {
 		if (sanatEnglanti.createNewFile()) {
 			System.out.println("Tallennettua sanakirjaa ei löytynyt, luodaan...");
 			sanakirja = new HashMap<String, String>();
-			//Jos tiedostoja ei löydy, luodaan pieni 
+			//Jos tiedostoja ei löydy, luodaan pieni sanakirja
 			
 			for (int i = 0; i < suomi.length; i++) {
 				sanakirja.put(suomi[i], englanti[i]);
